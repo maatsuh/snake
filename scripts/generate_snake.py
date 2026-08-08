@@ -206,18 +206,18 @@ def build_grid_from_github(owner, token):
 
 # ------------------------------- FOOD -----------------------------------
 def plan_foods(grid):
-    cands = []
+    good = []
     for i in range(GRID_COLS * GRID_ROWS):
         r, c = TRACK[i]
         if r >= 1 and grid[r][c] >= 1:
-            cands.append(i)
-    if not cands:
-        cands = [i for i in range(GRID_COLS * GRID_ROWS) if TRACK[i][0] >= 1]
+            good.append(i)
+    if len(good) < FOODS_PER_CYCLE:
+        good = [i for i in range(GRID_COLS * GRID_ROWS) if TRACK[i][0] >= 1]
     foods = []
     for k in range(FOODS_PER_CYCLE):
         target = 40 + k * (320.0 / max(1, FOODS_PER_CYCLE - 1))
-        pick = min(cands, key=lambda i: abs(i - target))
-        cands.remove(pick)
+        best = min(range(len(good)), key=lambda j: abs(good[j] - target))
+        pick = good.pop(best)
         foods.append(
             {
                 "cell": TRACK[pick],
